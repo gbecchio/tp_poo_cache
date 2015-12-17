@@ -32,5 +32,4 @@ $appClass = 'App\\'.$_GET['app'].'\\'.$_GET['app'].'Application';
 
 $app = new $appClass;
 
-var_dump($app);
 $app->run();

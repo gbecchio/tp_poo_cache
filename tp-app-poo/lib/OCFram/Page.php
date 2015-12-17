@@ -30,10 +30,26 @@ class Page extends ApplicationComponent
     ob_start();
       echo 'pas content du tout';
     $pas_content = ob_get_clean();
-
-    ob_start();
+    
+    $tab_module = explode('/', $this->contentFile);
+    // array_pop(array_pop(array_pop($tab_module)));
+    $module = $tab_module[count($tab_module) - 3];
+    $path_cache = '/tmp/cache/views/' . $this->app->name() . '_' . $module . '_' . basename($this->contentFile, ".php");
+    if (is_file($path_cache)){
+      ob_start();
+      require $path_cache;
+      $content = ob_get_clean();
+      var_dump('sldghlkdsgj');
+    }
+    else {
+      ob_start();
       require $this->contentFile;
-    $content = ob_get_clean();
+      $content = ob_get_clean();
+      var_dump('/tmp/cache/views/' . $this->app->name() . '_' . basename($this->contentFile, ".php"));
+      $fp = fopen('/tmp/cache/views/' . $this->app->name() . '_' . $module . '_' . basename($this->contentFile, ".php"), 'w');
+      fwrite($fp, $content);
+      fclose($fp);
+    }
 
     ob_start();
       require __DIR__.'/../../App/'.$this->app->name().'/Templates/layout.php';

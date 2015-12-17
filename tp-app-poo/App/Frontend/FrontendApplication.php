@@ -20,4 +20,9 @@ class FrontendApplication extends Application
     $this->httpResponse->setPage($controller->page());
     $this->httpResponse->send();
   }
+
+  public function createCache()
+  {
+    return;
+  }
 }

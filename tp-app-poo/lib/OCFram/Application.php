@@ -67,6 +67,8 @@ abstract class Application
 
   abstract public function run();
 
+  abstract public function createCache();
+
   public function httpRequest()
   {
     return $this->httpRequest;
