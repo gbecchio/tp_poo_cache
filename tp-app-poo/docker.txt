@@ -1,0 +1,7 @@
+sudo  docker run --name greg33 -v /home/greg/docker_partage/html/tp-app-poo:/var/www/html/tp-app-poo -v /home/greg/apache_docker:/etc/apache2/sites-available  -i -t -p 82:80 6faffd7c6887  /bin/bash
+
+sudo docker ps -al
+
+sudo docker start a4b80aaf18aa
+
+sudo docker exec -t -i  a4b80aaf18aa bash
