@@ -1,4 +1,4 @@
-sudo  docker run --name greg33 -v /home/greg/docker_partage/html/tp-app-poo:/var/www/html/tp-app-poo -v /home/greg/apache_docker:/etc/apache2/sites-available  -i -t -p 82:80 6faffd7c6887  /bin/bash
+sudo  docker run --name greg33 -v /home/greg/tp_poo_cache/tp-app-poo:/var/www/html/tp-app-poo -v /home/greg/tp_poo_cache/apache_docker:/etc/apache2/sites-available  -i -t -p 82:80 6faffd7c6887  /bin/bash
 
 sudo docker ps -al
 
