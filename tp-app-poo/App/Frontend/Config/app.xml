@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<definitions>
+  <define var="nombre_news" value="2" />
+  <define var="nombre_caracteres" value="20" />
+  <define var="my_name" value="grégory" />
+</definitions>
