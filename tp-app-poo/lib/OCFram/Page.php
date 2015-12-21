@@ -27,10 +27,6 @@ class Page extends ApplicationComponent
     $user = $this->app->user();
 
     extract($this->vars);
-
-    ob_start();
-      echo 'pas content du tout';
-    $pas_content = ob_get_clean();
     
     $tab_module = explode('/', $this->contentFile);
     // array_pop(array_pop(array_pop($tab_module)));
@@ -45,7 +41,20 @@ class Page extends ApplicationComponent
     $cache = new \OCFram\CacheViews();
     $cache->getCache($file_name);
     $temp = $cache->getDateExpiration();
-    if ($temp)
+    if (basename($this->contentFile, ".php") == 'insertComment' 
+      OR basename($this->contentFile, ".php") == 'updateComment'
+      OR basename($this->contentFile, ".php") == 'insert' 
+      OR basename($this->contentFile, ".php") == 'update'
+    )
+    {
+      require __DIR__.'/../../App/'.$this->app->name().'/Templates/layout.php';
+      $temp = ob_get_clean();
+
+      $path = '/tmp/cache/views/';
+      exec("rm -rf {$path}");
+
+    }
+    else if ($temp)
     {
       $temp = $cache->getCache($file_name);
     }
@@ -54,7 +63,6 @@ class Page extends ApplicationComponent
       require __DIR__.'/../../App/'.$this->app->name().'/Templates/layout.php';
       $cache->setDateExpiration(time() + (60));
       $temp = ob_get_clean();
-      var_dump($temp);
       $cache->createCache($file_name, $temp);
     }
     return $temp;
