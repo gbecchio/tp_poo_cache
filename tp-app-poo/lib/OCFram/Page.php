@@ -4,6 +4,7 @@ namespace OCFram;
 class Page extends ApplicationComponent
 {
   protected $contentFile;
+  protected $expirationDate;
   protected $vars = [];
 
   public function addVar($var, $value)
@@ -34,26 +35,28 @@ class Page extends ApplicationComponent
     $tab_module = explode('/', $this->contentFile);
     // array_pop(array_pop(array_pop($tab_module)));
     $module = $tab_module[count($tab_module) - 3];
-    $path_cache = '/tmp/cache/views/' . $this->app->name() . '_' . $module . '_' . basename($this->contentFile, ".php");
-    if (is_file($path_cache)){
-      ob_start();
-      require $path_cache;
-      $content = ob_get_clean();
-      var_dump('sldghlkdsgj');
-    }
-    else {
-      ob_start();
-      require $this->contentFile;
-      $content = ob_get_clean();
-      var_dump('/tmp/cache/views/' . $this->app->name() . '_' . basename($this->contentFile, ".php"));
-      $fp = fopen('/tmp/cache/views/' . $this->app->name() . '_' . $module . '_' . basename($this->contentFile, ".php"), 'w');
-      fwrite($fp, $content);
-      fclose($fp);
-    }
+    $file_name = $this->app->name() . '_' . $module . '_' . basename($this->contentFile, ".php");
 
     ob_start();
+    require $this->contentFile;
+    $content = ob_get_clean();
+
+    ob_start();
+    $cache = new \OCFram\CacheViews();
+    $cache->getCache($file_name);
+    $temp = $cache->getDateExpiration();
+    if ($temp)
+    {
+      $temp = unserialize($cache->getCache($file_name));
+    }
+    else
+    {
       require __DIR__.'/../../App/'.$this->app->name().'/Templates/layout.php';
-    return ob_get_clean();
+      $cache->setDateExpiration(time() + (60));
+      $temp = ob_get_clean();
+      $cache->createCache($temp, $temp);
+    }
+    return $temp;
   }
 
   public function setContentFile($contentFile)
@@ -64,5 +67,13 @@ class Page extends ApplicationComponent
     }
 
     $this->contentFile = $contentFile;
+  }
+  public function setExpirationDate($expirationDate)
+  {
+    $this->expirationDate = $expirationDate;
+  }
+  public function getExpirationDate()
+  {
+    return $this->expirationDate;
   }
 }
