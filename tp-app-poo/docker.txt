@@ -8,4 +8,6 @@ sudo docker exec -t -i  a4b80aaf18aa bash
 
 a2enmod rewrite
 
+a2enmod vhost_alias
+
 /etc/init.d/apache2 restart

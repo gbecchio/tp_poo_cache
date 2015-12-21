@@ -6,6 +6,7 @@ use \OCFram\HTTPRequest;
 use \Entity\Comment;
 use \FormBuilder\CommentFormBuilder;
 use \OCFram\FormHandler;
+use \OCFram\CacheDatas;
 
 class NewsController extends BackController
 {
@@ -41,16 +42,28 @@ class NewsController extends BackController
   
   public function executeShow(HTTPRequest $request)
   {
-    $news = $this->managers->getManagerOf('News')->getUnique($request->getData('id'));
-    
-    if (empty($news))
+    $file_name = 'page_'.$request->getData('id');
+
+    $cache = new \OCFram\CacheDatas();
+    $cache->getCache($file_name);
+    $temp = $cache->getDateExpiration();
+    if ($temp)
     {
-      $this->app->httpResponse()->redirect404();
+      $this->page = unserialize($cache->getCache($file_name));
     }
-    
-    $this->page->addVar('title', $news->titre());
-    $this->page->addVar('news', $news);
-    $this->page->addVar('comments', $this->managers->getManagerOf('Comments')->getListOf($news->id()));
+    else
+    {
+      $news = $this->managers->getManagerOf('News')->getUnique($request->getData('id'));
+      if (empty($news))
+      {
+        $this->app->httpResponse()->redirect404();
+      }
+      $this->page->addVar('title', $news->titre());
+      $this->page->addVar('news', $news);
+      $this->page->addVar('comments', $this->managers->getManagerOf('Comments')->getListOf($news->id()));
+      $cache->setDateExpiration(time() + (60));
+      $cache->createCache($file_name, $this->page);
+    }
   }
 
   public function executeInsertComment(HTTPRequest $request)
