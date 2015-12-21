@@ -42,17 +42,7 @@ class NewsController extends BackController
   
   public function executeShow(HTTPRequest $request)
   {
-    $file_name = 'page_'.$request->getData('id');
 
-    $cache = new \OCFram\CacheDatas();
-    $cache->getCache($file_name);
-    $temp = $cache->getDateExpiration();
-    if ($temp)
-    {
-      $this->page = unserialize($cache->getCache($file_name));
-    }
-    else
-    {
       $news = $this->managers->getManagerOf('News')->getUnique($request->getData('id'));
       if (empty($news))
       {
@@ -61,9 +51,6 @@ class NewsController extends BackController
       $this->page->addVar('title', $news->titre());
       $this->page->addVar('news', $news);
       $this->page->addVar('comments', $this->managers->getManagerOf('Comments')->getListOf($news->id()));
-      $cache->setDateExpiration(time() + (60));
-      $cache->createCache($file_name, $this->page);
-    }
   }
 
   public function executeInsertComment(HTTPRequest $request)
