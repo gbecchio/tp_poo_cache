@@ -35,7 +35,7 @@
         </section>
       </div>
     
-      <footer><?= $mon_nom ?></footer>
+      <footer><?= $my_name ?></footer>
     </div>
     <div><?= $pas_content ?></div>
   </body>

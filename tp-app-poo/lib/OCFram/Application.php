@@ -67,7 +67,7 @@ abstract class Application
 
   abstract public function run();
 
-  abstract public function createCache();
+  # abstract public function createCache();
 
   public function httpRequest()
   {
