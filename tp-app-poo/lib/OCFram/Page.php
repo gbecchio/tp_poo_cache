@@ -47,14 +47,15 @@ class Page extends ApplicationComponent
     $temp = $cache->getDateExpiration();
     if ($temp)
     {
-      $temp = unserialize($cache->getCache($file_name));
+      $temp = $cache->getCache($file_name);
     }
     else
     {
       require __DIR__.'/../../App/'.$this->app->name().'/Templates/layout.php';
       $cache->setDateExpiration(time() + (60));
       $temp = ob_get_clean();
-      $cache->createCache($temp, $temp);
+      var_dump($temp);
+      $cache->createCache($file_name, $temp);
     }
     return $temp;
   }
