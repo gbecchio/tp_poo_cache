@@ -1,23 +1,20 @@
 <?php
 setcookie("TestCookie", 'test1', time()+120);
-ini_set("display_errors",1);
-error_reporting(E_ALL); 
 class HTTPRequestTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
         global $_COOKIE;
-        var_dump(setcookie('name', 'fame'));
-        $_COOKIE['TestCookie'] = 'test1';
+        $_COOKIE['test'] = 'test';
     }
 
     public function testCookieData()
     {
-        $this->assertEquals($_COOKIE['TestCookie'], 'test1');
+         $this->assertEquals($_COOKIE['test'], 'test');
     }
 
     protected function tearDown()
     {
-        unset($_COOKIE['TestCookie']);
+      unset($_COOKIE);
     }
 }
