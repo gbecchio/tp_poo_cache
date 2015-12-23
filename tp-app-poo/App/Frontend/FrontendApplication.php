@@ -15,33 +15,31 @@ class FrontendApplication extends Application
   public function run()
   {
     $controller = $this->getController();
-    if (!isset($_GET['id']))
+    $page = $controller->page();
+    
+    $this->httpResponse->setPage($page);
+    
+    if (($content = $controller->cache()->readView($this->name.'_'.$controller->module().'_'.$controller->action())) !== null)
     {
-      $controller->execute();
-      $this->httpResponse->setPage($controller->page());
+      $page->setContent($content);
+      $wholePage = $page->getGeneratedPage();
     }
     else
     {
-      $file_name = 'page_'.$_GET['id'];
-      $cache = new \OCFram\CacheDatas();
+      $controller->execute();
+      $wholePage = $page->getGeneratedPage();
       
-      $cache->getCache('page_'.$_GET['id']);
-      
-      $temp = $cache->getDateExpiration();
-      $temp_time = time();
-      if ($temp && $temp < $temp_time)
+      if (is_callable([$controller, 'createCache']))
       {
-        $this->httpResponse = unserialize($cache->getCache($file_name));
-      }
-      else
-      {
-        $controller->execute();
-        $this->httpResponse->setPage($controller->page());
-        $a = $this->httpResponse;
-        $cache->setDateExpiration(time() + (60));
-        $cache->createCache($file_name, $a);
+        $cache = $controller->createCache();
+        
+        if (array_key_exists($controller->action(), $cache))
+        {
+          $controller->cache()->writeView($this->name.'_'.$controller->module().'_'.$controller->action(), $page->content(), $cache[$controller->action()]);
+        }
       }
     }
-    $this->httpResponse->send();
+    
+    $this->httpResponse->send($wholePage);
   }
 }

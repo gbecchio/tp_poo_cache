@@ -50,6 +50,13 @@ abstract class CommentsManager extends Manager
    * @return array
    */
   abstract public function getListOf($news);
+  
+  /**
+   * Retourne l'identifiant de la news à laquelle est rattaché le commentaire
+   * @param $comment L'identifiant du commentaire concerné
+   * @return int
+   */
+  abstract public function getNewsId($comment);
 
   /**
    * Méthode permettant de modifier un commentaire.

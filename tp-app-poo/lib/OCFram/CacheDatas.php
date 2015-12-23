@@ -11,7 +11,7 @@ class CacheDatas extends Cache
     fwrite($fp, $this->dateExpiration."\n");
     fwrite($fp, serialize($input));
     fclose($fp);
-    return $fp;
+    return $this->tabTime;
   }
   public function getCache($fileName)
   {

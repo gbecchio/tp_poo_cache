@@ -11,7 +11,7 @@ class CacheViews extends Cache
     fwrite($fp, $this->dateExpiration."\n");
     fwrite($fp, $input);
     fclose($fp);
-    return $fp;
+    return $this->tabTime;
   }
   public function getCache($fileName)
   {

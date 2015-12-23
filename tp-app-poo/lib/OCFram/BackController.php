@@ -8,6 +8,7 @@ abstract class BackController extends ApplicationComponent
   protected $page = null;
   protected $view = '';
   protected $managers = null;
+  protected $cache = null;
 
   public function __construct(Application $app, $module, $action)
   {
@@ -15,6 +16,7 @@ abstract class BackController extends ApplicationComponent
 
     $this->managers = new Managers('PDO', PDOFactory::getMysqlConnexion());
     $this->page = new Page($app);
+    $this->cache = new Cache(__DIR__.'/../../tmp/cache/datas', __DIR__.'/../../tmp/cache/views');
 
     $this->setModule($module);
     $this->setAction($action);
@@ -31,6 +33,21 @@ abstract class BackController extends ApplicationComponent
     }
 
     $this->$method($this->app->httpRequest());
+  }
+  
+  public function module()
+  {
+    return $this->module;
+  }
+  
+  public function action()
+  {
+    return $this->action;
+  }
+  
+  public function cache()
+  {
+    return $this->cache;
   }
 
   public function page()

@@ -17,6 +17,9 @@ class NewsController extends BackController
     
     $this->managers->getManagerOf('News')->delete($newsId);
     $this->managers->getManagerOf('Comments')->deleteFromNews($newsId);
+    
+    $this->cache->delete('news_'.$newsId);
+    $this->cache->delete('comments_'.$newsId);
 
     $this->app->user()->setFlash('La news a bien été supprimée !');
 
@@ -25,6 +28,8 @@ class NewsController extends BackController
 
   public function executeDeleteComment(HTTPRequest $request)
   {
+    $this->cache->delete('comments_'.$this->managers->getManagerOf('Comments')->getNewsId($request->getData('id')));
+    
     $this->managers->getManagerOf('Comments')->delete($request->getData('id'));
     
     $this->app->user()->setFlash('Le commentaire a bien été supprimé !');
@@ -83,7 +88,7 @@ class NewsController extends BackController
     if ($formHandler->process())
     {
       $this->app->user()->setFlash('Le commentaire a bien été modifié');
-
+      $this->cache->delete('comments_'.$this->managers->getManagerOf('Comments')->getNewsId($comment['id']));
       $this->app->httpResponse()->redirect('/admin/');
     }
 
@@ -128,10 +133,11 @@ class NewsController extends BackController
     if ($formHandler->process())
     {
       $this->app->user()->setFlash($news->isNew() ? 'La news a bien été ajoutée !' : 'La news a bien été modifiée !');
-      
+      $this->cache->deleteView('Frontend_News_index');
       $this->app->httpResponse()->redirect('/admin/');
     }
 
-    $this->page->addVar('form', $form->createView());
+    $v = $form->createView();
+    $this->page->addVar('form', $v);
   }
 }

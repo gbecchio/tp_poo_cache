@@ -3,8 +3,8 @@ namespace OCFram;
 
 class Page extends ApplicationComponent
 {
+  protected $content = null;
   protected $contentFile;
-  protected $expirationDate;
   protected $vars = [];
 
   public function addVar($var, $value)
@@ -23,49 +23,38 @@ class Page extends ApplicationComponent
     {
       throw new \RuntimeException('La vue spécifiée n\'existe pas');
     }
-
+    
     $user = $this->app->user();
 
     extract($this->vars);
+
+    if ($this->content === null)
+    {
+      ob_start();
+        require $this->contentFile;
+      $this->content = ob_get_clean();
+    }
+
+    $content = $this->content;
     
-    $tab_module = explode('/', $this->contentFile);
-    // array_pop(array_pop(array_pop($tab_module)));
-    $module = $tab_module[count($tab_module) - 3];
-    $file_name = $this->app->name() . '_' . $module . '_' . basename($this->contentFile, ".php");
-
     ob_start();
-    require $this->contentFile;
-    $content = ob_get_clean();
-
-    ob_start();
-    $cache = new \OCFram\CacheViews();
-    $cache->getCache($file_name);
-    $temp = $cache->getDateExpiration();
-    if (basename($this->contentFile, ".php") == 'insertComment' 
-      OR basename($this->contentFile, ".php") == 'updateComment'
-      OR basename($this->contentFile, ".php") == 'insert' 
-      OR basename($this->contentFile, ".php") == 'update'
-    )
-    {
       require __DIR__.'/../../App/'.$this->app->name().'/Templates/layout.php';
-      $temp = ob_get_clean();
-
-      $path = '/tmp/cache/views/';
-      exec("rm -rf {$path}");
-
-    }
-    else if ($temp)
+    return ob_get_clean();
+  }
+  
+  public function content()
+  {
+    return $this->content;
+  }
+  
+  public function setContent($content)
+  {
+    if (!is_string($content))
     {
-      $temp = $cache->getCache($file_name);
+      throw new \InvalidArgumentException('Le contenu de la page doit être une chaine de caractères');
     }
-    else
-    {
-      require __DIR__.'/../../App/'.$this->app->name().'/Templates/layout.php';
-      $cache->setDateExpiration(time() + (60));
-      $temp = ob_get_clean();
-      $cache->createCache($file_name, $temp);
-    }
-    return $temp;
+    
+    $this->content = $content;
   }
 
   public function setContentFile($contentFile)
@@ -76,13 +65,5 @@ class Page extends ApplicationComponent
     }
 
     $this->contentFile = $contentFile;
-  }
-  public function setExpirationDate($expirationDate)
-  {
-    $this->expirationDate = $expirationDate;
-  }
-  public function getExpirationDate()
-  {
-    return $this->expirationDate;
   }
 }

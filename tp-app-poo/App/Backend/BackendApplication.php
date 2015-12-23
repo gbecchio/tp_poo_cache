@@ -25,7 +25,8 @@ class BackendApplication extends Application
 
     $controller->execute();
 
-    $this->httpResponse->setPage($controller->page());
-    $this->httpResponse->send();
+    $page = $controller->page();
+    $this->httpResponse->setPage($page);
+    $this->httpResponse->send($page->getGeneratedPage());
   }
 }

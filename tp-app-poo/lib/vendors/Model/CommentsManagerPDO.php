@@ -50,6 +50,13 @@ class CommentsManagerPDO extends CommentsManager
     
     return $comments;
   }
+  
+  public function getNewsId($comment)
+  {
+    $query = $this->dao->query('SELECT news FROM comments WHERE id = '.(int) $comment);
+    
+    return $query->fetch(\PDO::FETCH_ASSOC)['news'];
+  }
 
   protected function modify(Comment $comment)
   {
