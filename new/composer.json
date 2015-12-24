@@ -3,6 +3,6 @@
         "phpunit/phpunit": "5.1.*"
     },
     "autoload":{
-        "psr-0": { "": "lib/" }
+        "psr-0": { "": "lib" }
     }
 }
