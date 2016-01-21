@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<livre>
+    <titre>ertification PHP 5.5</titre>
+    <chapitre id="3">
+        <id>3</id>
+        <titre>Formats et types de données</titre>
+        <description>Gestion XML, JSON, Date et heure et introduction aux services web REST et SOAP</description>
+    </chapitre>
+</livre>
